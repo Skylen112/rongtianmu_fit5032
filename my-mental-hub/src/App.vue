@@ -139,22 +139,20 @@ export default {
       this.isMenuOpen = false;
     },
     handleMenuClick(menuName) {
-      console.log(`点击了菜单: ${menuName}`);
+      console.log(`click the menu: ${menuName}`);
       this.closeMenu();
-      // 这里可以添加路由跳转逻辑
     },
     handleGetStarted() {
-      console.log('开始使用');
+      console.log('get started');
     },
     handleLearnMore() {
-      console.log('了解更多');
+      console.log('learn more');
     },
     handleFeatureClick(featureName) {
-      console.log(`探索功能: ${featureName}`);
+      console.log(`explore the new feature: ${featureName}`);
     }
   },
   mounted() {
-    // 防止菜单打开时滚动
     this.$watch('isMenuOpen', (newVal) => {
       if (newVal) {
         document.body.style.overflow = 'hidden';
