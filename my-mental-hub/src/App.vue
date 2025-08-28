@@ -1,6 +1,12 @@
 <script setup>
 import HelloWorld from './components/HelloWorld.vue'
 import TheWelcome from './components/TheWelcome.vue'
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import 'datatables.net-bs5/css/dataTables.bootstrap5.min.css';
+import $ from 'jquery';
+import 'datatables.net-bs5';
+
 </script>
 <template>
   <div class="home-container">
@@ -47,41 +53,53 @@ import TheWelcome from './components/TheWelcome.vue'
     </header>
 
     <!-- Hero Section -->
-    <main class="main-content">
-      <section class="hero-section">
-        <div class="hero-content">
+    <section class="hero-section container">
+      <div class="row">
+        <div class="col-lg-6 col-md-8 col-sm-12 hero-content">
           <h1 class="hero-title">Welcome to MyMentalHub</h1>
           <p class="hero-subtitle">Unwind in Your Own Cozy Corner</p>
-          <div class="hero-buttons">
-            <button class="btn btn-primary" @click="handleGetStarted">Get started</button>
-            <button class="btn btn-secondary" @click="handleLearnMore">learn more</button>
+            <div class="d-flex justify-content-center gap-3">
+        <button class="btn btn-primary" style="font-size: clamp(0.8rem, 1.5vw, 1rem); padding: 0.5rem 1rem;">
+          Get started
+        </button>
+        <button class="btn btn-secondary" style="font-size: clamp(0.8rem, 1.5vw, 1rem); padding: 0.5rem 1rem;">
+          Learn more
+        </button>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
+    <main>
 
       <!-- Features Section -->
       <section class="features-section">
-        <div class="section-header">
-          <h2 class="section-title">Core function</h2>
-          <p class="section-subtitle">Please explore the core function we build for you guys!</p>
+        <div class="container">
+          <div class="row justify-content-center text-center">
+            <div class="col-lg-6 col-md-8 col-sm-12">
+              <h2 class="section-title">Core function</h2>
+              <p class="section-subtitle ">Please explore the core function we build for you guys!</p>
+            </div>
+          </div>
         </div>
         
-        <div class="features-grid">
-          <div class="feature-card" v-for="feature in features" :key="feature.title">
+        <div class="features-grid" style="display: flex; flex-wrap: nowrap; overflow-x: auto;margin-top: 30px;">
+          <div
+            class="feature-card"
+            v-for="(feature, index) in features"
+            :key="index"
+            style="flex: 1 1 30%;max-width: 32%;min-width: 200px; margin-bottom: 20px;padding: 10px; box-sizing: border-box;"
+          >
             <div class="feature-icon">{{ feature.icon }}</div>
             <h3 class="feature-title">{{ feature.title }}</h3>
             <p class="feature-desc">{{ feature.description }}</p>
-            <button class="feature-btn" @click="handleFeatureClick(feature.title)">
-              Explore more
-            </button>
           </div>
         </div>
       </section>
 
       <!-- Stats Section -->
       <section class="stats-section">
-        <div class="stats-container">
-          <div class="stat-item" v-for="stat in stats" :key="stat.label">
+        <div class="stats-container" style="display: flex; flex-wrap: nowrap; overflow-x: auto; text-align: center;">
+          <div class="stat-item col-md-3 col-sm-6" v-for="stat in stats" :key="stat.label">
             <div class="stat-number">{{ stat.number }}</div>
             <div class="stat-label">{{ stat.label }}</div>
           </div>
@@ -115,7 +133,7 @@ export default {
       features: [
         {
           title: 'Blog',
-          icon: '📝',
+          icon: '📓',
           description: 'Deep Articles from Various Interest Areas '
         },
         {
@@ -418,6 +436,7 @@ export default {
 }
 
 .hero-buttons {
+  flex-wrap: nowrap; 
   display: flex;
   gap: 1rem;
   justify-content: center;
