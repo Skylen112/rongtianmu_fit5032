@@ -1,75 +1,81 @@
 <template>
   <div class="container mt-5">
-    <div class="row">
-      <div class="col-md-8 offset-md-2">
-        <h1 class="text-center mb-4">Sign Up Page</h1>
+    <div class="row justify-content-center">
+      <div class="col-md-6 col-lg-5">
+        <!-- title -->
+        <h1 class="text-center mb-3">Sign Up Page</h1>
+
+        <!-- temlate -->
         <form @submit.prevent="submitForm">
-          <!-- Username & Password -->
-          <div class="row mb-3">
-            <div class="col-6">
-              <label for="username" class="form-label">Username</label>
-              <input 
-                type="text" 
-                class="form-control" 
-                id="username"
-                v-model="formData.username"
-                @blur="() => validateName(true)"
-                @input="() => validateName(false)" 
-              />
-              <div v-if="errors.username" class="text-danger">{{ errors.username }}</div>
-            </div>
-            <div class="col-6">
-              <label for="password" class="form-label">Password</label>
-              <input 
-                type="password" 
-                class="form-control" 
-                id="password"
-                v-model="formData.password"
-                @blur="() => validatePassword(true)"
-                @input="() => validatePassword(false)" 
-              />
-              <div v-if="errors.password" class="text-danger">{{ errors.password }}</div>
-            </div>
+          
+          <!-- Username -->
+          <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="username"
+              v-model="formData.username"
+              @blur="() => validateName(true)"
+              @input="() => validateName(false)" 
+            />
+            <div v-if="errors.username" class="text-danger">{{ errors.username }}</div>
           </div>
-          <!-- Checkbox & Gender -->
-          <div class="row mb-3">
-            <div class="col-6">
-              <label for="gender" class="form-label">Gender</label>
-              <select 
-                class="form-select" 
-                id="gender" 
-                v-model="formData.gender"
-              >
-                <option disabled value="">Select...</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
+
+          <!-- Password -->
+          <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input 
+              type="password" 
+              class="form-control" 
+              id="password"
+              v-model="formData.password"
+              @blur="() => validatePassword(true)"
+              @input="() => validatePassword(false)" 
+            />
+            <div v-if="errors.password" class="text-danger">{{ errors.password }}</div>
           </div>
+          <!-- Gender -->
+          <div class="mb-3">
+            <label for="gender" class="form-label">Gender</label>
+            <select 
+              class="form-select" 
+              id="gender" 
+              v-model="formData.gender"
+            >
+              <option disabled value="">Select...</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
           <!-- Phone -->
           <div class="mb-3">
             <label for="phone" class="form-label">Phone</label>
             <input 
-                type="text"
-                id="phone"
-                v-model="formData.phone"
-                @blur="() => validatePhone(true)"
-                @input="() => validatePhone(false)"
-              />
+              type="text"
+              id="phone"
+              class="form-control"
+              v-model="formData.phone"
+              @blur="() => validatePhone(true)"
+              @input="() => validatePhone(false)"
+            />
             <div v-if="errors.phone" class="text-danger">{{ errors.phone }}</div>
           </div>
+
           <!-- Buttons -->
-          <div class="text-center">
+          <div class="text-center mt-4">
             <button type="submit" class="btn btn-primary me-2">Submit</button>
             <button type="button" class="btn btn-secondary" @click="clearForm">Clear</button>
           </div>
+
         </form>
       </div>
     </div>
   </div>
-
 </template>
+
 
 <script setup>
 import { ref } from 'vue';
@@ -155,13 +161,18 @@ const submitForm = () => {
 };
 </script>
 
+<style scoped>
+form {
+  border-radius: 10px; 
+  background-color: rgb(145, 140, 140);
+  padding: 20px; 
+}
 
-<!-- <style scoped>
-   .text-center{
-    border-radius:23px;
-    background-color: white;
-    border-radius: 5 px;
-    display:flex;
-    gap:10px;
-   }
-</style> -->
+input{
+  color: rgb(120, 119, 119);
+}
+
+textarea{
+  background-color:black;
+}
+</style>
