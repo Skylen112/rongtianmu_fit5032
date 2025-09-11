@@ -3,20 +3,19 @@
     <div class="row justify-content-center">
       <div class="col-md-6 col-lg-5">
         <!-- title -->
-        <h1 class="text-center mb-3">Sign Up Page</h1>
+        <h1 class="signup-title">Sign Up Page</h1>
 
         <!-- temlate -->
         <form @submit.prevent="submitForm">
 
           <!-- Email-->>
            <div class="mb-3">
-            <label for="email" class="form-label">Password</label>
+            <label for="email" class="form-label">Email</label>
             <input
               type="email"
               class="form-control"
               id="email"
-              v-model="formData.password"
-              @blur="() => validateEmail(true)"
+              v-model="formData.email"
               @input="() => validateEmail(false)"
               />
               <div v-if="errors.email" class="text-danger">{{ errors.email }}</div>
@@ -30,7 +29,6 @@
               class="form-control"
               id="username"
               v-model="formData.username"
-              @blur="() => validateName(true)"
               @input="() => validateName(false)"
             />
             <div v-if="errors.username" class="text-danger">{{ errors.username }}</div>
@@ -44,7 +42,6 @@
               class="form-control"
               id="password"
               v-model="formData.password"
-              @blur="() => validatePassword(true)"
               @input="() => validatePassword(false)"
             />
             <div v-if="errors.password" class="text-danger">{{ errors.password }}</div>
@@ -72,7 +69,6 @@
               id="phone"
               class="form-control"
               v-model="formData.phone"
-              @blur="() => validatePhone(true)"
               @input="() => validatePhone(false)"
             />
             <div v-if="errors.phone" class="text-danger">{{ errors.phone }}</div>
@@ -92,6 +88,8 @@
 
 
 <script setup>
+
+import {getAuth, createUserWithEmailAndPassword} from "firebase/auth"
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -99,6 +97,7 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 
 const formData = ref({
+  email:'',
   username: '',
   password: '',
   gender: '',
@@ -106,40 +105,46 @@ const formData = ref({
 });
 
 const errors = ref({
+  email: null,
   username: null,
   password: null,
   phone: null
 });
 
+
+
 const clearForm = () => {
-  formData.value = { username: '', password: '', gender: '', phone: '' };
-  errors.value = { username: null, password: null, phone: null };
+  formData.value = { email:'', username: '', password: '', gender: '', phone: '' };
+  errors.value = { email: null, username: null, password: null, phone: null };
 };
 
 // validate email
-const validateEmail = (blur) =>{
-  const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-
-  // eslint-disable-next-line no-undef
-  if(!pattern.test(email.value)){
-    errors.value = "Email is invalid"
-    return false
+const validateEmail = () => {
+  const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!pattern.test(formData.value.email)) {
+    errors.value.email = "Email is invalid";
+    return false;
   }
-}
+  errors.value.email = null;
+  return true;
+};
 
 // Missing error & Length error
-const validateName = (blur) => {
-  if (!formData.value.username) {
-    if (blur) errors.value.username = "Username is required";
-  } else if (formData.value.username.length < 3) {
-    if (blur) errors.value.username = "Username must be at least 3 characters";
-  } else {
-    errors.value.username = null;
+const validateName = () => {
+  const username = formData.value.username;
+  if (!username) {
+    errors.value.username = "Username is required";
+    return false;
+  } else if (username.length < 3) {
+    errors.value.username = "Username must be at least 3 characters";
+    return false;
   }
+  errors.value.username = null;
+  return true;
 };
 
 // Length Error & Strength Error
-const validatePassword = (blur) => {
+const validatePassword = () => {
   const password = formData.value.password;
   const minLength = 6;
   const hasUppercase = /[A-Z]/.test(password);
@@ -148,70 +153,120 @@ const validatePassword = (blur) => {
   const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
 
   if (password.length < minLength) {
-    if (blur) errors.value.password = `Password must be at least ${minLength} characters long.`;
+    errors.value.password = `Password must be at least ${minLength} characters long.`;
+    return false;
   } else if (!hasUppercase) {
-    if (blur) errors.value.password = "Password must contain at least one uppercase letter.";
+    errors.value.password = "Password must contain at least one uppercase letter.";
+    return false;
   } else if (!hasLowercase) {
-    if (blur) errors.value.password = "Password must contain at least one lowercase letter.";
+    errors.value.password = "Password must contain at least one lowercase letter.";
+    return false;
   } else if (!hasNumber) {
-    if (blur) errors.value.password = "Password must contain at least one number.";
+    errors.value.password = "Password must contain at least one number.";
+    return false;
   } else if (!hasSpecialChar) {
-    if (blur) errors.value.password = "Password must contain at least one special character.";
+    errors.value.password = "Password must contain at least one special character.";
+    return false;
   } else {
     errors.value.password = null;
+    return true;
   }
 };
 
 // Length error & InvalidFormat error
-const validatePhone = (blur) => {
+const validatePhone = () => {
   const value = formData.value.phone || '';
+  if (value.length !== 10) {
+    errors.value.phone = "Phone number must be 10 digits";
+    return false;
+  } else if (!/^\d+$/.test(value)) {
+    errors.value.phone = "Phone must contain only digits";
+    return false;
+  }
+  errors.value.phone = null;
+  return true;
+};
 
-  if(value.length != 10){
-    if(blur)errors.value.phone = "Phone number must be 10 characters long.";
-  }else if(!/^\d+$/.test(value)){
-    if(blur)errors.value.phone = "Phone must be contain only digits";
-  } else {
-    errors.value.phone = null;
+
+const submitForm = async () => {
+  console.log("submitForm triggered");
+
+  const emailValid = validateEmail(true);
+  const nameValid = validateName(true);
+  const passwordValid = validatePassword(true);
+  const phoneValid = validatePhone(true);
+
+  if (!emailValid || !nameValid || !passwordValid || !phoneValid) {
+    console.log("Please fix errors first");
+
+    return;
+  }
+
+  try {
+    const auth = getAuth();
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      formData.value.email,
+      formData.value.password
+    );
+    console.log("Firebase Register Successful!", userCredential.user);
+    alert("Register Successful!");
+    router.push("/FireLogin");
+  } catch (error) {
+    console.error("Error:", error.code, error.message);
+    errors.value.firebase = error.message;
   }
 };
 
-const submitForm = () => {
-  validateName(true);
-  validatePassword(true);
-  validatePhone(true);
-
-  if (!errors.value.username && !errors.value.password && !errors.value.phone) {
-    router.push('/Home');
-  }
-
-  createUserWithEmailAndPassword(auth, formData.value.get("email"), formData.value.get("password"))
-  .then((data) => {
-    console.log("Firebase Register Successful!")
-    router.push("/FireLogin")
-  }).catch((error) => {
-    console.log(error.code);
-  })
-};
-
-import {getAuth, createUserWithEmailAndPassword} from "firebase/auth"
 
 
-const auth = getAuth()
 
 </script>
 
 <style scoped>
+.col-md-6.col-lg-5 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 120%;
+}
+
+.signup-title{
+  font-weight: bold;
+  max-width:100%;
+  white-space: nowrap;
+  margin-left: auto;
+  margin-right: auto;
+  align-items: center;
+}
+
+.mb-3 {
+  margin-bottom: 1rem;
+  max-width: 80%;
+  text-align: center;
+  font-family: "Lucida Console", "Courier New", monospace;
+  margin-left:auto;
+  margin-right:auto;
+}
+
 form {
-  border-radius: 10px;
+  border-radius: 20px;
   background-color: rgb(145, 140, 140);
   padding: 20px;
+  position: middle;
+  width:550px;
+  margin-left:auto;
+  margin-right:auto;
 }
 
 input{
   color: rgb(120, 119, 119);
+  font-family:Arial, Helvetica, sans-serif;
 }
 
 textarea{
   background-color:black;
 }
+
+
 </style>
