@@ -7,17 +7,31 @@
 
         <!-- temlate -->
         <form @submit.prevent="submitForm">
-          
+
+          <!-- Email-->>
+           <div class="mb-3">
+            <label for="email" class="form-label">Password</label>
+            <input
+              type="email"
+              class="form-control"
+              id="email"
+              v-model="formData.password"
+              @blur="() => validateEmail(true)"
+              @input="() => validateEmail(false)"
+              />
+              <div v-if="errors.email" class="text-danger">{{ errors.email }}</div>
+           </div>
+
           <!-- Username -->
           <div class="mb-3">
             <label for="username" class="form-label">Username</label>
-            <input 
-              type="text" 
-              class="form-control" 
+            <input
+              type="text"
+              class="form-control"
               id="username"
               v-model="formData.username"
               @blur="() => validateName(true)"
-              @input="() => validateName(false)" 
+              @input="() => validateName(false)"
             />
             <div v-if="errors.username" class="text-danger">{{ errors.username }}</div>
           </div>
@@ -25,22 +39,22 @@
           <!-- Password -->
           <div class="mb-3">
             <label for="password" class="form-label">Password</label>
-            <input 
-              type="password" 
-              class="form-control" 
+            <input
+              type="password"
+              class="form-control"
               id="password"
               v-model="formData.password"
               @blur="() => validatePassword(true)"
-              @input="() => validatePassword(false)" 
+              @input="() => validatePassword(false)"
             />
             <div v-if="errors.password" class="text-danger">{{ errors.password }}</div>
           </div>
           <!-- Gender -->
           <div class="mb-3">
             <label for="gender" class="form-label">Gender</label>
-            <select 
-              class="form-select" 
-              id="gender" 
+            <select
+              class="form-select"
+              id="gender"
               v-model="formData.gender"
             >
               <option disabled value="">Select...</option>
@@ -53,7 +67,7 @@
           <!-- Phone -->
           <div class="mb-3">
             <label for="phone" class="form-label">Phone</label>
-            <input 
+            <input
               type="text"
               id="phone"
               class="form-control"
@@ -101,6 +115,17 @@ const clearForm = () => {
   formData.value = { username: '', password: '', gender: '', phone: '' };
   errors.value = { username: null, password: null, phone: null };
 };
+
+// validate email
+const validateEmail = (blur) =>{
+  const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+  // eslint-disable-next-line no-undef
+  if(!pattern.test(email.value)){
+    errors.value = "Email is invalid"
+    return false
+  }
+}
 
 // Missing error & Length error
 const validateName = (blur) => {
@@ -158,14 +183,28 @@ const submitForm = () => {
   if (!errors.value.username && !errors.value.password && !errors.value.phone) {
     router.push('/Home');
   }
+
+  createUserWithEmailAndPassword(auth, formData.value.get("email"), formData.value.get("password"))
+  .then((data) => {
+    console.log("Firebase Register Successful!")
+    router.push("/FireLogin")
+  }).catch((error) => {
+    console.log(error.code);
+  })
 };
+
+import {getAuth, createUserWithEmailAndPassword} from "firebase/auth"
+
+
+const auth = getAuth()
+
 </script>
 
 <style scoped>
 form {
-  border-radius: 10px; 
+  border-radius: 10px;
   background-color: rgb(145, 140, 140);
-  padding: 20px; 
+  padding: 20px;
 }
 
 input{
