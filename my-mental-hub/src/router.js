@@ -3,6 +3,7 @@ import SignUp from "./views/SignUp.vue"
 import Home from './views/Home.vue'
 import FirebaseSigninView from  './views/FirebaseSigninView.vue'
 import userProfile from './views/userProfile.vue'
+import postPage from './views/PostPage.vue'
 
 const routes =[
   {
@@ -12,7 +13,8 @@ const routes =[
   },
   {path: '/login', component: FirebaseSigninView},
   { path:'/home', name:'home', component: Home},
-  {path:'/profile',name:'profile',component:userProfile}
+  {path:'/profile',name:'profile',component:userProfile},
+  {path:'/post',name:'post',component:postPage}
 ]
 
 const router = createRouter({

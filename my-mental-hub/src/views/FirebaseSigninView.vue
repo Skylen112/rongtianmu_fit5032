@@ -7,22 +7,21 @@
 
 <script setup>
 import { ref } from "vue"
-import {getAuth, signInWithEmailAndPassword} from "firebase/auth"
-import {useRouter} from "vue-router"
+import { signInWithEmailAndPassword } from "firebase/auth"
+import { useRouter } from "vue-router"
+import { auth } from "@/firebase/init.js"   // ✅ 从 init.js 导入 auth
 
 const email = ref("")
 const password = ref("")
 const router = useRouter()
-const auth = getAuth()
 
-const signin = () => {
-  signInWithEmailAndPassword(getAuth(), email.value, password.value)
-  .then((data) => {
-    console.log("Firebase Register Successful!")
+const signin = async () => {
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value)
+    console.log("Firebase Signin Successful!", userCredential.user)
     router.push("/home")
-    console.log(auth.currentUser) //To check the current User signed in
-  }).catch((error) => {
-    console.log(error.code);
-  })
-};
+  } catch (error) {
+    console.log(error.code, error.message)
+  }
+}
 </script>

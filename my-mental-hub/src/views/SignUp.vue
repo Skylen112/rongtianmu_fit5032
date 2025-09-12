@@ -5,10 +5,10 @@
         <!-- title -->
         <h1 class="signup-title">Sign Up Page</h1>
 
-        <!-- temlate -->
+
         <form @submit.prevent="submitForm">
 
-          <!-- Email-->>
+
            <div class="mb-3">
             <label for="email" class="form-label">Email</label>
             <input
@@ -21,7 +21,6 @@
               <div v-if="errors.email" class="text-danger">{{ errors.email }}</div>
            </div>
 
-          <!-- Username -->
           <div class="mb-3">
             <label for="username" class="form-label">Username</label>
             <input
@@ -74,6 +73,20 @@
             <div v-if="errors.phone" class="text-danger">{{ errors.phone }}</div>
           </div>
 
+          <!-- Admin Option -->
+          <div class="mb-3 d-flex align-items-center">
+            <input
+              type="checkbox"
+              id="isAdmin"
+              v-model="formData.isAdmin"
+              class="form-check-input"
+              style="width: 24px; height: 24px; margin-right: 10px;"
+            >
+            <label for="isAdmin" class="form-check-label" style="font-size: 1.2rem; font-weight: 600;">
+              Register as Admin
+            </label>
+          </div>
+
           <!-- Buttons -->
           <div class="text-center mt-4">
             <button type="submit" class="btn btn-primary me-2">Submit</button>
@@ -101,7 +114,8 @@ const formData = ref({
   username: '',
   password: '',
   gender: '',
-  phone: ''
+  phone: '',
+  isAdmin: false,
 });
 
 const errors = ref({
@@ -195,6 +209,7 @@ const submitForm = async () => {
   const nameValid = validateName(true);
   const passwordValid = validatePassword(true);
   const phoneValid = validatePhone(true);
+  console.log("Is Admin:", formData.value.isAdmin);
 
   if (!emailValid || !nameValid || !passwordValid || !phoneValid) {
     console.log("Please fix errors first");
@@ -211,6 +226,16 @@ const submitForm = async () => {
     );
     console.log("Firebase Register Successful!", userCredential.user);
     alert("Register Successful!");
+
+    const db = getFirestore();
+    await setDoc(doc(db, "users", userCredential.user.uid), {
+      email: formData.value.email,
+      username: formData.value.username,
+      phone: formData.value.phone,
+      gender: formData.value.gender,
+      role: formData.value.isAdmin ? "admin" : "user"
+    });
+
     router.push("/FireLogin");
   } catch (error) {
     console.error("Error:", error.code, error.message);
