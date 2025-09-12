@@ -157,7 +157,10 @@ export default {
 
        if (menuName === 'Account') {
       this.$router.push('/profile');
-    }
+    }else if (menuName === 'Post') {
+
+        this.$router.push('/post');
+      }
     },
     handleGetStarted() {
       console.log('get started');
