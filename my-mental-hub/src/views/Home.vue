@@ -11,7 +11,7 @@ import 'datatables.net-bs5';
         <div class="logo">
           <h1 class="logo-text">MyMentalHub</h1>
         </div>
-        
+
         <!-- Burger Menu Button -->
         <button class="burger-btn" @click="toggleMenu" :class="{ active: isMenuOpen }">
           <span class="burger-line"></span>
@@ -22,17 +22,17 @@ import 'datatables.net-bs5';
 
       <!-- Burger Menu Overlay -->
       <div class="menu-overlay" :class="{ active: isMenuOpen }" @click="closeMenu"></div>
-      
+
       <!-- Burger Menu -->
       <nav class="burger-menu" :class="{ active: isMenuOpen }">
         <div class="menu-header">
           <h2 class="menu-title">Menu</h2>
           <button class="close-btn" @click="closeMenu">✕</button>
         </div>
-        
+
         <ul class="menu-list">
           <li class="menu-item" v-for="(item, index) in menuItems" :key="item.name">
-            <a href="#" class="menu-link" @click="handleMenuClick(item.name)" 
+            <a href="#" class="menu-link" @click="handleMenuClick(item.name)"
                :style="{ 'animation-delay': `${index * 0.1}s` }">
               <span class="menu-icon">{{ item.icon }}</span>
               <span class="menu-text">{{ item.name }}</span>
@@ -40,7 +40,7 @@ import 'datatables.net-bs5';
             </a>
           </li>
         </ul>
-        
+
         <div class="menu-footer">
           <p class="menu-footer-text">An adventurous journey toward mental well-being</p>
         </div>
@@ -76,7 +76,7 @@ import 'datatables.net-bs5';
             </div>
           </div>
         </div>
-        
+
         <div class="features-grid" style="display: flex; flex-wrap: nowrap; overflow-x: auto;margin-top: 30px;">
           <div
             class="feature-card"
@@ -154,6 +154,10 @@ export default {
     handleMenuClick(menuName) {
       console.log(`click the menu: ${menuName}`);
       this.closeMenu();
+
+       if (menuName === 'Account') {
+      this.$router.push('/profile');
+    }
     },
     handleGetStarted() {
       console.log('get started');
@@ -431,7 +435,7 @@ export default {
 }
 
 .hero-buttons {
-  flex-wrap: nowrap; 
+  flex-wrap: nowrap;
   display: flex;
   gap: 1rem;
   justify-content: center;
@@ -599,37 +603,37 @@ export default {
   .nav-container {
     padding: 1rem;
   }
-  
+
   .hero-title {
     font-size: 2.5rem;
   }
-  
+
   .hero-subtitle {
     font-size: 1.1rem;
   }
-  
+
   .hero-section {
     padding: 4rem 1rem;
   }
-  
+
   .features-section {
     padding: 4rem 1rem;
   }
-  
+
   .burger-menu {
     width: 300px;
     right: -300px;
   }
-  
+
   .floating-card {
     display: none;
   }
-  
+
   .hero-buttons {
     flex-direction: column;
     align-items: center;
   }
-  
+
   .btn {
     width: 100%;
     max-width: 280px;
@@ -640,15 +644,15 @@ export default {
   .menu-link {
     padding: 1rem;
   }
-  
+
   .menu-header {
     padding: 1.5rem 1rem;
   }
-  
+
   .stats-container {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .stat-number {
     font-size: 2rem;
   }

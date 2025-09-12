@@ -5,8 +5,6 @@
 </template>
 
 <script>
-import SignUp from './SignUp.vue'
-
 export default {
   name: 'App'
 }

@@ -1,15 +1,18 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import SignUp from "./views/SignUp.vue"
 import Home from './views/Home.vue'
-
+import FirebaseSigninView from  './views/FirebaseSigninView.vue'
+import userProfile from './views/userProfile.vue'
 
 const routes =[
   {
-    path :'/FireLogin',
-    name:'FireLogin',
+    path :'/register',
+    name:'register',
     component: SignUp
   },
-  { path:'/home', name:'Home', component: Home}
+  {path: '/login', component: FirebaseSigninView},
+  { path:'/home', name:'home', component: Home},
+  {path:'/profile',name:'profile',component:userProfile}
 ]
 
 const router = createRouter({
