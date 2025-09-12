@@ -5,7 +5,6 @@
       <p><strong>Post:</strong> {{ post.content }}</p>
       <p><strong>Average Rating:</strong> {{ post.averageRating }}</p>
 
-      <!-- 点击评分 -->
       <div class="rating">
         <span
           v-for="n in 5"
@@ -22,14 +21,15 @@
 <script>
 import { ref, onMounted } from 'vue';
 import { collection, getDocs, doc, updateDoc, arrayUnion } from 'firebase/firestore';
-import { db } from '@/firebase/init.js'; // 确认 init.js 导出 { db }
+import { db } from '@/firebase/init.js';
 
 export default {
   setup() {
     const posts = ref([]);
-    const email = "admin@gmail.com"; // 当前用户邮箱，可替换成登录用户
+    const email = "admin@gmail.com";
 
-    // 获取 posts 并计算平均分
+
+
     const fetchPosts = async () => {
       try {
         const querySnapshot = await getDocs(collection(db, 'posts'));
@@ -52,7 +52,6 @@ export default {
       }
     };
 
-    // 点击评分
     const submitRating = async (post, score) => {
       try {
         const postRef = doc(db, 'posts', post.id);
@@ -63,7 +62,7 @@ export default {
           })
         });
         alert(`You rated ${score} stars`);
-        fetchPosts(); // 更新平均分
+        fetchPosts();
       } catch (err) {
         console.error('Error submitting rating:', err);
       }
@@ -74,6 +73,7 @@ export default {
     });
 
     return {
+      email,
       posts,
       submitRating
     };
