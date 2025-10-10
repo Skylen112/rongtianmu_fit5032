@@ -5,6 +5,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import { createApp } from 'vue'
 import App from './views/App.vue'
 import router from './router'
+import menu from './views/MenuView.vue'
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";

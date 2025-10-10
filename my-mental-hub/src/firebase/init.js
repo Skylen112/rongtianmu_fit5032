@@ -13,10 +13,10 @@ const firebaseConfig = {
   measurementId: "G-WHYWCKGZZX"
 };
 
-// 初始化 Firebase
+// initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// 显式传入 app
+// import app
 const db = getFirestore(app);
 const auth = getAuth(app);
 

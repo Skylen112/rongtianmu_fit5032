@@ -19,7 +19,7 @@ const signin = async () => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value)
     console.log("Firebase Signin Successful!", userCredential.user)
-    router.push("/home")
+    router.push("/")
   } catch (error) {
     console.log(error.code, error.message)
   }
