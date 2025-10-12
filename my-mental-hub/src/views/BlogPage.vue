@@ -3,9 +3,9 @@
     <MenuView />
 
 <!-- title section -->
-  <section class="title">
+  <!-- <section class="title">
     <header>Blog Hub</header>
-  </section>
+  </section> -->
 
 <!-- blog section -->
   <section class="blog-section">
@@ -33,8 +33,8 @@
   import axios from "axios"
   import { getAuth } from "firebase/auth"
   import MenuView from './MenuView.vue'
-import {  collection, getDocs, doc, updateDoc, arrayUnion } from 'firebase/firestore'
-import { db } from '@/firebase/init'
+  import {  collection, getDocs, doc, updateDoc, arrayUnion } from 'firebase/firestore'
+  import { db } from '@/firebase/init'
 
 
   // user auth
@@ -103,30 +103,17 @@ onMounted(() => {
   }
 }
 
-
-const router = useRouter()
-
-const backtohome = () => router.push('/')
 </script>
 
 <style scoped>
 
 #app {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f5f5f5;
-  padding: 20px;
-  color: #333;
+  padding: 130px;
 }
 
 .title {
   text-align: center;
   margin-bottom: 30px;
-}
-
-.title header {
-  font-size: 2.5rem;
-  font-weight: bold;
-  color: #2c3e50;
 }
 
 /* 博客卡片容器 */

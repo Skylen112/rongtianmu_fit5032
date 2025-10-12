@@ -1,11 +1,12 @@
 <template>
   <div id="menu" class="navbar">
       <div class="nav-container">
-        <div class="title">MyMentalHub</div>
+        <button class="title" @click="gotohome('/')">MyMentalHub</button>
         <ul class="nav-menu">
           <li><button class="menu-btn" @click="gotopost('Post')">Post</button></li>
           <li><button class="menu-btn" @click="gotoblog('Blog')">Blog</button></li>
-          <li><button class="menu-btn" @click="gotoctivity('Activity')">Activity</button></li>
+          <li><button class="menu-btn" @click="gotoactivity('Activity')">Activity</button></li>
+          <l1><button class="menu-btn"@click="gotocontact('Contact')">Contact</button></l1>
         </ul>
         <div class="auth-buttons">
           <button class="auth-btn login-btn" @click="gotoLogin">Login</button>
@@ -27,6 +28,12 @@ const gotoLogin= () => router.push('/login')
 const gotopost= () => router.push('/post')
 
 const gotoblog =  () => router.push('/blog')
+
+const gotoactivity = () => router.push('/activity')
+
+const gotocontact = () => router.push('/contact')
+
+const gotohome = () => router.push('/')
 </script>
 
 <style scoped>
@@ -38,7 +45,7 @@ const gotoblog =  () => router.push('/blog')
   width: 100%;
   height: 80px;
   z-index: 1000;
-  background: #80A1BA;
+  /* background: #80A1BA; */
   color: #fff;
   display: flex;
   align-items: center;
@@ -83,7 +90,7 @@ const gotoblog =  () => router.push('/blog')
 .auth-buttons {
   display: flex;
   gap: 1rem;
-  margin-left: auto; /* 自动推到右边 */
+  margin-left: auto;
 }
 
 .auth-btn {

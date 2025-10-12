@@ -6,6 +6,8 @@ import { createApp } from 'vue'
 import App from './views/App.vue'
 import router from './router'
 import menu from './views/MenuView.vue'
+import PrimeVue from "./views/App.vue"
+import Aura from '@primeuix/themes/aura'
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
@@ -28,4 +30,11 @@ import { initializeApp } from "firebase/app";
 // // Initialize Firebase
 // initializeApp(firebaseConfig)
 
-createApp(App).use(router).mount('#app')
+createApp(App).use(router).mount('#app');
+App.use(
+  PrimeVue,{
+    themes:{
+      preset: Aura
+    }
+  }
+)

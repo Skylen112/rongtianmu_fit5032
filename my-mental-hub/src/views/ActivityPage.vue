@@ -1,50 +1,46 @@
 <template>
-  <div class="page-container">
-    <MenuView />
+  <MenuView />
+  <div id="page-container">
+
 
     <!-- Journey Points Section -->
     <section class="journey-section">
       <div class="section-header">
-        <h2>Journey Points</h2>
+        <h2>Journey Map</h2>
       </div>
 
       <div class="journey-content">
         <!-- Map Container -->
         <div class="map-container">
           <div id="map" class="map-display">
-            <!-- 地图将在这里加载 -->
-            <div class="map-placeholder">
-              <div id="map" class="map-display"></div>
-            </div>
           </div>
         </div>
 
         <!-- Right Side Controls -->
         <div class="control-panel">
-          <!-- Search Places -->
+          <!-- Discover Places -->
           <div class="control-card">
             <h3>
               <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <circle cx="11" cy="11" r="8"/>
                 <path d="m21 21-4.35-4.35"/>
               </svg>
-              Searching Places of Interest
+              Discover Places
             </h3>
             <input
               type="text"
               class="search-input"
               placeholder="Search for places..."
               v-model="searchQuery"
+              @input="updateMarkers"
             />
             <div class="search-results">
-              <!-- 搜索结果列表 -->
               <div class="result-item" v-for="place in filteredPlaces" :key="place.id">
                 <span class="place-name">{{ place.name }}</span>
-                <button class="btn-add">Add</button>
+                <button class="btn-add" @click="focusPlace(place)">Add</button>
               </div>
             </div>
           </div>
-
           <!-- Navigation -->
           <div class="control-card">
             <h3>
@@ -54,7 +50,7 @@
               Navigation Between Places
             </h3>
             <div class="route-list">
-              <div class="route-item" v-for="(route, index) in routes" :key="index">
+              <div class="route-item" v-for="(route, index) in routes" :key="route.id">
                 <div class="route-number">{{ index + 1 }}</div>
                 <input
                   type="text"
@@ -62,128 +58,12 @@
                   v-model="route.name"
                   placeholder="Enter location"
                 />
-                <button class="btn-remove">×</button>
+                <button class="btn-remove" @click="routes.splice(index, 1)">×</button>
               </div>
               <button class="btn-add-route" @click="addRoute">+ Add Stop</button>
             </div>
-            <button class="btn-primary">Calculate Route</button>
+            <button class="btn-primary" @click="calculateRoute">Calculate Route</button>
           </div>
-
-          <!-- Trip Information -->
-          <div class="control-card">
-            <h3>
-              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <circle cx="12" cy="12" r="10"/>
-                <path d="M12 6v6l4 2"/>
-              </svg>
-              Trip Information
-            </h3>
-            <div class="trip-stats">
-              <div class="stat-item">
-                <span class="stat-label">Total Distance</span>
-                <span class="stat-value">0 km</span>
-              </div>
-              <div class="stat-item">
-                <span class="stat-label">Estimated Time</span>
-                <span class="stat-value">0 hrs</span>
-              </div>
-              <div class="stat-item">
-                <span class="stat-label">Total Stops</span>
-                <span class="stat-value">{{ routes.length }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Travel Guide Section -->
-    <section class="guide-section">
-      <div class="section-header">
-        <h2>Travel Guide</h2>
-      </div>
-
-      <div class="guide-content">
-        <!-- Search and Filter Controls -->
-        <div class="table-controls">
-          <div class="search-box">
-            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <circle cx="11" cy="11" r="8"/>
-              <path d="m21 21-4.35-4.35"/>
-            </svg>
-            <input
-              type="text"
-              class="table-search"
-              placeholder="Search in guide..."
-              v-model="tableSearch"
-            />
-          </div>
-
-          <div class="filter-controls">
-            <select class="filter-select" v-model="sortBy">
-              <option value="">Sort by...</option>
-              <option value="name">Name</option>
-              <option value="type">Type</option>
-              <option value="rating">Rating</option>
-              <option value="distance">Distance</option>
-            </select>
-            <button class="btn-filter">
-              <svg class="icon-small" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/>
-              </svg>
-              Filter
-            </button>
-          </div>
-        </div>
-
-        <!-- Data Table -->
-        <div class="table-wrapper">
-          <table class="guide-table">
-            <thead>
-              <tr>
-                <th @click="sortTable('name')">
-                  Place Name
-                  <span class="sort-indicator">↕</span>
-                </th>
-                <th @click="sortTable('type')">
-                  Type
-                  <span class="sort-indicator">↕</span>
-                </th>
-                <th @click="sortTable('rating')">
-                  Rating
-                  <span class="sort-indicator">↕</span>
-                </th>
-                <th @click="sortTable('distance')">
-                  Distance
-                  <span class="sort-indicator">↕</span>
-                </th>
-                <th>Description</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item in filteredGuideData" :key="item.id">
-                <td class="place-cell">{{ item.name }}</td>
-                <td>
-                  <span class="type-badge">{{ item.type }}</span>
-                </td>
-                <td>
-                  <div class="rating">
-                    <span class="stars">★★★★☆</span>
-                    <span class="rating-value">{{ item.rating }}</span>
-                  </div>
-                </td>
-                <td>{{ item.distance }}</td>
-                <td class="description-cell">{{ item.description }}</td>
-                <td>
-                  <div class="action-buttons">
-                    <button class="btn-icon" title="View">👁️</button>
-                    <button class="btn-icon" title="Add to trip">➕</button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
         </div>
       </div>
     </section>
@@ -191,89 +71,217 @@
 </template>
 
 <script>
-import mapboxgl from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
+import mapboxgl from "mapbox-gl";
+import "mapbox-gl/dist/mapbox-gl.css";
+import MenuView from './MenuView.vue';
 
 export default {
-  name: 'TravelPage',
+
+  name: "ActivityPage",
+
+  components: { MenuView },
+
   data() {
     return {
-      map: null, // 存放 Mapbox 实例
-      searchQuery: '',
-      tableSearch: '',
-      sortBy: '',
+      map: null,
+      searchQuery: "",
+      markers: [],
+      accessToken:
+        "pk.eyJ1IjoidGlhbm11IiwiYSI6ImNtZ2xleWhqODE3MnAybHByYzQ5aHBramUifQ.ciIc2e-ABryMv1kT40QdNg",
+
+      // ✅ route input
       routes: [
-        { id: 1, name: '' },
-        { id: 2, name: '' }
+        { id: 1, name: "", coordinates: null },
+        { id: 2, name: "", coordinates: null },
       ],
-      filteredPlaces: [
-        { id: 1, name: 'Sample Place 1' },
-        { id: 2, name: 'Sample Place 2' }
-      ],
-      guideData: [
+
+      // ✅ database：Discover Places and public route
+      destinationData: [
         {
           id: 1,
-          name: 'Sample Destination',
-          type: 'Attraction',
-          rating: 4.5,
-          distance: '2.5 km',
-          description: 'A beautiful place to visit'
-        }
-      ]
+          name: "The Drum Youth Services",
+          type: "Youth Centre",
+          coordinates: [144.9425, -37.8005],
+          description:
+            "Provide young people with group activities, holiday outings, training, and educational support.",
+        },
+        {
+          id: 2,
+          name: "Innovation Youth Centre",
+          type: "Youth Centre",
+          coordinates: [144.96, -37.7],
+          description:
+            "Programs and activities aimed at improving social, recreational, and employment skills.",
+        },
+        {
+          id: 3,
+          name: "Aliya Youth Space",
+          type: "Youth Centre",
+          coordinates: [144.9942, -37.8694],
+          description:
+            "A safe space for teenagers and young people to carry out empowerment projects.",
+        },
+        {
+          id: 4,
+          name: "Youth Projects Ltd",
+          type: "Youth Centre",
+          coordinates: [144.9156, -37.706],
+          description:
+            "Provide outreach services including housing, education, and crisis support.",
+        },
+      ],
     };
   },
+
   computed: {
-    filteredGuideData() {
-      if (!this.tableSearch) return this.guideData;
-      const query = this.tableSearch.toLowerCase();
-      return this.guideData.filter(item =>
-        item.name.toLowerCase().includes(query) ||
-        item.type.toLowerCase().includes(query) ||
-        item.description.toLowerCase().includes(query)
+    // ✅ Discover Places searching filter logics
+    filteredPlaces() {
+      if (!this.searchQuery.trim()) return [];
+      const query = this.searchQuery.toLowerCase();
+      return this.destinationData.filter(
+        (place) =>
+          place.name.toLowerCase().includes(query) ||
+          place.type.toLowerCase().includes(query)
       );
-    }
+    },
   },
+
+  mounted() {
+    // ✅ initialize Mapbox
+    mapboxgl.accessToken = this.accessToken;
+    this.map = new mapboxgl.Map({
+      container: "map",
+      style: "mapbox://styles/tianmu/cmglg7k0700jp01rifam2733v",
+      center: [144.96, -37.81],
+      zoom: 10,
+    });
+  },
+
+  watch: {
+    // ✅ refresh the Marker while results changing
+    filteredPlaces(newPlaces) {
+      this.updateMarkers(newPlaces);
+    },
+  },
+
   methods: {
-    addRoute() {
-      this.routes.push({
-        id: Date.now(),
-        name: ''
+    // ✅ Discover Places：update the map and marks
+    updateMarkers(places) {
+      this.markers.forEach((m) => m.remove());
+      this.markers = [];
+
+      places.forEach((p) => {
+        const marker = new mapboxgl.Marker()
+          .setLngLat(p.coordinates)
+          .setPopup(
+            new mapboxgl.Popup().setHTML(
+              `<h3>${p.name}</h3><p>${p.description}</p>`
+            )
+          )
+          .addTo(this.map);
+        this.markers.push(marker);
       });
     },
-    sortTable(column) {
-      console.log('Sorting by:', column);
-      // 实现排序逻辑
-    }
+
+    focusPlace(place) {
+      this.map.flyTo({ center: place.coordinates, zoom: 14 });
+      this.updateMarkers([place]);
+    },
+
+    // ✅ Navigation Between Places:
+    findCoordinates(name) {
+      const found = this.destinationData.find(
+        (d) => d.name.toLowerCase() === name.toLowerCase()
+      );
+      return found ? found.coordinates : null;
+    },
+
+    addRoute() {
+      this.routes.push({ id: Date.now(), name: "", coordinates: null });
+    },
+
+    async calculateRoute() {
+      console.log("🟡 Calculating route...");
+      const locations = this.routes
+        .map((r) => this.findCoordinates(r.name))
+        .filter((coord) => coord);
+
+      if (locations.length < 2) {
+        alert("Please enter at least two valid locations.");
+        return;
+      }
+
+      const coordsString = locations.map((c) => c.join(",")).join(";");
+      const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${coordsString}?geometries=geojson&access_token=${this.accessToken}`;
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (!data.routes || !data.routes.length) {
+          alert("No valid route found.");
+          return;
+        }
+
+        const route = data.routes[0].geometry;
+
+        // remove the old route
+        if (this.map.getSource("route")) {
+          this.map.removeLayer("route");
+          this.map.removeSource("route");
+        }
+
+
+        this.map.addSource("route", {
+          type: "geojson",
+          data: {
+            type: "Feature",
+            geometry: route,
+          },
+        });
+
+        this.map.addLayer({
+          id: "route",
+          type: "line",
+          source: "route",
+          layout: { "line-join": "round", "line-cap": "round" },
+          paint: { "line-color": "#8A2BE2", "line-width": 6 },
+        });
+
+
+        const bounds = new mapboxgl.LngLatBounds();
+        route.coordinates.forEach((coord) => bounds.extend(coord));
+        this.map.fitBounds(bounds, { padding: 50 });
+
+        // 添加起点与终点标记
+        this.markers.forEach((m) => m.remove());
+        this.markers = locations.map((coord, index) => {
+          const marker = new mapboxgl.Marker({
+            color: index === 0 ? "green" : index === locations.length - 1 ? "red" : "blue",
+          })
+            .setLngLat(coord)
+            .addTo(this.map);
+          return marker;
+        });
+      } catch (err) {
+        console.error("Route calculation error:", err);
+      }
+    },
   },
-  mounted() {
-    // 初始化 Mapbox
-    mapboxgl.accessToken = 'pk.eyJ1IjoidGlhbm11IiwiYSI6ImNtZ2xleWhqODE3MnAybHByYzQ5aHBramUifQ.ciIc2e-ABryMv1kT40QdNg';
 
-    this.map = new mapboxgl.Map({
-      container: 'map', // template 中 div 的 id
-      style: 'mapbox://styles/tianmu/cmglg7k0700jp01rifam2733v',
-      center: [-74.5, 40],
-      zoom: 9
-    });
-
-    // 移除占位元素
-    const placeholder = document.querySelector('#map .map-placeholder');
-    if (placeholder) placeholder.remove();
-
-    // 添加测试 Marker
-    new mapboxgl.Marker()
-      .setLngLat([-74.5, 40])
-      .setPopup(new mapboxgl.Popup().setHTML("<h3>Hello Mapbox!</h3>"))
-      .addTo(this.map);
-  }
 };
 </script>
 
 <style scoped>
-.page-container {
+#app{
+  padding:80px;
+}
+
+#page-container {
   min-height: 100vh;
   background-color: #80A1BA;
   padding: 20px;
+  padding-top:150px;
 }
 
 /* Section Headers */
@@ -395,7 +403,7 @@ export default {
 }
 
 /* Buttons */
-.btn-add, .btn-remove {
+.btn-add {
   padding: 4px 12px;
   border: none;
   border-radius: 6px;

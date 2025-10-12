@@ -6,6 +6,8 @@ import userProfile from './views/UserProfile.vue'
 import PostPage from './views/PostPage.vue'
 import BlogPage from './views/BlogPage.vue'
 import ActivityPage from './views/ActivityPage.vue'
+import ContactPage from './views/ContactPage.vue'
+
 const routes =[
   {
     path :'/register',
@@ -17,7 +19,8 @@ const routes =[
   {path:'/profile',name:'profile',component:userProfile},
   {path:'/post',name:'post',component:PostPage},
   {path:'/blog',name:'blog',component:BlogPage},
-  {path:'/activity',name:'activity',component:ActivityPage}
+  {path:'/activity',name:'activity',component:ActivityPage},
+  {path:'/contact',name:'contact',component:ContactPage}
 ]
 
 const router = createRouter({

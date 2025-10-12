@@ -76,7 +76,7 @@ html, body, #app {
   padding: 0;
   overflow-x: hidden;
   overflow-y: auto;
-  background: linear-gradient(135deg, #FFF7DD 0%, #B4DEBD 50%, #91C4C3 100%);
+  background: #80A1BA;
   font-family: 'Arial', sans-serif;
   color: #000;
   /* width: 100vw; */
