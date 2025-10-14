@@ -77,12 +77,12 @@
           <div class="mb-3 d-flex align-items-center">
             <input
               type="checkbox"
-              id="isAdmin"
-              v-model="formData.isAdmin"
+              id="role"
+              v-model="formData.role"
               class="form-check-input"
               style="width: 24px; height: 24px; margin-right: 10px;"
             >
-            <label for="isAdmin" class="form-check-label" style="font-size: 1.2rem; font-weight: 600;">
+            <label for="role" class="form-check-label" style="font-size: 1.2rem; font-weight: 600;">
               Register as Admin
             </label>
           </div>
@@ -101,7 +101,7 @@
 
 
 <script setup>
-
+import { getFirestore, doc, setDoc } from "firebase/firestore";
 import {getAuth, createUserWithEmailAndPassword} from "firebase/auth"
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -115,7 +115,7 @@ const formData = ref({
   password: '',
   gender: '',
   phone: '',
-  isAdmin: false,
+  role: false,
 });
 
 const errors = ref({
@@ -209,7 +209,7 @@ const submitForm = async () => {
   const nameValid = validateName(true);
   const passwordValid = validatePassword(true);
   const phoneValid = validatePhone(true);
-  console.log("Is Admin:", formData.value.isAdmin);
+  console.log("Is Admin:", formData.value.role);
 
   if (!emailValid || !nameValid || !passwordValid || !phoneValid) {
     console.log("Please fix errors first");
@@ -233,7 +233,7 @@ const submitForm = async () => {
       username: formData.value.username,
       phone: formData.value.phone,
       gender: formData.value.gender,
-      role: formData.value.isAdmin ? "admin" : "user"
+      role: formData.value.role ? "admin" : "user"
     });
 
     router.push("/FireLogin");

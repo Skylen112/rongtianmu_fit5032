@@ -1,42 +1,28 @@
 <template>
   <section class="intro-section">
-    <h1 class>Overview</h1>
-    <span>Our company establised in 2025...</span>
+    <h1>Overview</h1>
+    <span>Our company established in 2025...</span>
   </section>
 
   <section class="contact-section">
-    <div class="table-container">
-      <DataTable :value="staff" tableStyle="width: 100%; max-width:800px">
-        <template #header>
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <span class="text-xl font-bold">Contact</span>
-            <Button icon="pi pi-refresh" rounded raised @click="refreshTable"></Button>
-          </div>
-        </template>
-        <Column field="Employee ID" header="Employee ID"></Column>
-        <Column field="Name" header="Name"></Column>
-        <Column field="Email" header="Email"></Column>
-        <Column field="Phone" header="Phone"></Column>
-        <template #footer>In total there are {{ staff ? staff.length :0 }} staff. </template>
-      </DataTable>
-    </div>
-
     <div class="control-panel">
       <div class="control-card">
-        <h3>
-
-        </h3>
+        <h3></h3>
       </div>
-      <div class="control-card">
-        <h3>
-
-        </h3>
-      </div>
-      <div class="control-card">
-        <h3>
-
-        </h3>
-      </div>
+    </div>
+    <div class="table-container">
+      <DataTable :value="staff" paginator :rows="5" :rowsPerPageOptions="[5,10,20,50]" tableStyle="min-width: 50rem">
+        <template #header>
+          <div class="table-header">
+            <span class="table-title">Contact</span>
+          </div>
+        </template>
+        <Column field="Employee ID" sortable header="Employee ID"></Column>
+        <Column field="Name" sortable header="Name"></Column>
+        <Column field="Email" sortable header="Email"></Column>
+        <Column field="Phone" sortable header="Phone"></Column>
+        <template #footer>In total there are {{ staff.length }} staff.</template>
+      </DataTable>
     </div>
   </section>
 
@@ -45,31 +31,21 @@
   </section>
 </template>
 
-<script>
+<script setup>
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
-import ColumnGroup from 'primevue/columngroup';
-import Row from 'primevue/row';
-import {ref, onMounted } from 'vue';
-import Button from 'primevue/button';
+import { computed } from 'vue';
 
-import ContactData from '../assets/Contact.json'
+import ContactData from '../assets/Contact.json';
 
-// import the componets
-const staff = ref([])
-
-
-onMounted(() => {
-  staff.value = ContactData
-})
-
-const refreshTable = () => {
-  staff.value = [...ContactData]
-}
+const staff = computed(() => ContactData.map(item => ({ ...item })));
 </script>
 
-
 <style scoped>
+.flex {
+  border: 1px solid blue;
+}
+
 /* Global Page Styles */
 body {
   margin: 0;
@@ -223,10 +199,9 @@ body {
 /* Contact Section */
 .contact-section {
   padding: 60px 20px;
-  min-width:800px;
-  max-width: 1400px;
+  /* min-width:800px; */
+  /* max-width: 1400px; */
   margin: 0 auto;
-  border: 1px solid red;
 }
 
 .section-title {
@@ -252,20 +227,13 @@ body {
   background: white;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  min-width: 400px;
-  max-width: 1200px;
+  /* min-width: 400px; */
+  /* max-width: 1200px; */
+  width: 1200px;
   padding: 1rem;
   border: 1px solid green;
-
   display: block;       /* 确保 block */
   min-height: 400px;    /* ⚠️ 关键，避免高度为0 */
-}
-
-.subsection-title {
-  color: #1e293b;
-  font-size: 20px;
-  font-weight: 600;
-  margin-bottom: 20px;
 }
 
 .contact-table table {
@@ -301,16 +269,6 @@ body {
   font-size: 14px;
 }
 
-.dept-cell {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.dept-icon {
-  font-size: 20px;
-}
-
 .contact-table a {
   color: #80A1BA;
   text-decoration: none;
@@ -334,267 +292,6 @@ body {
   border-radius: 12px;
   padding: 24px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.control-card h3 {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: #1e293b;
-  font-size: 17px;
-  font-weight: 600;
-  margin-bottom: 18px;
-}
-
-.icon {
-  width: 22px;
-  height: 22px;
-  stroke-width: 2;
-  color: #80A1BA;
-}
-
-.info-content {
-  color: #475569;
-  font-size: 14px;
-  line-height: 1.7;
-}
-
-.address-text {
-  margin-bottom: 16px;
-  line-height: 1.8;
-}
-
-.link-button {
-  display: inline-flex;
-  align-items: center;
-  color: #80A1BA;
-  font-weight: 600;
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-.link-button:hover {
-  color: #6b8aa3;
-}
-
-.hours-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.hours-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px;
-  background: #f8fafc;
-  border-radius: 6px;
-}
-
-.day {
-  font-weight: 500;
-  color: #334155;
-}
-
-.time {
-  color: #64748b;
-}
-
-.emergency-text {
-  margin-bottom: 16px;
-}
-
-.emergency-number {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px;
-  background: #fee2e2;
-  border-radius: 8px;
-  margin-bottom: 12px;
-}
-
-.emergency-icon {
-  font-size: 24px;
-}
-
-.emergency-phone {
-  font-size: 20px;
-  font-weight: 700;
-  color: #dc2626;
-}
-
-.emergency-note {
-  text-align: center;
-  font-size: 13px;
-  color: #64748b;
-  font-style: italic;
-}
-
-/* Social Section */
-.social-section {
-  padding: 60px 20px 80px;
-  background: #80A1BA;
-}
-
-.social-container {
-  max-width: 900px;
-  margin: 0 auto;
-}
-
-.social-title {
-  color: white;
-  font-size: 32px;
-  font-weight: 600;
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-.attribution-card {
-  background: white;
-  border-radius: 16px;
-  padding: 40px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-  display: flex;
-  gap: 30px;
-  align-items: flex-start;
-  margin-bottom: 40px;
-}
-
-.mockaroo-logo {
-  flex-shrink: 0;
-}
-
-.mockaroo-logo svg {
-  width: 80px;
-  height: 80px;
-  color: #80A1BA;
-  stroke-width: 1.5;
-}
-
-.attribution-content h3 {
-  color: #1e293b;
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 16px;
-}
-
-.attribution-content p {
-  color: #475569;
-  font-size: 15px;
-  line-height: 1.7;
-  margin-bottom: 20px;
-}
-
-.attribution-links {
-  display: flex;
-  gap: 16px;
-}
-
-.attribution-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 20px;
-  background: #80A1BA;
-  color: white;
-  text-decoration: none;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: background 0.2s;
-}
-
-.attribution-link:hover {
-  background: #6b8aa3;
-}
-
-.link-icon {
-  width: 16px;
-  height: 16px;
-  stroke-width: 2;
-}
-
-/* Social Links */
-.social-links {
-  text-align: center;
-  margin-top: 50px;
-}
-
-.social-links-title {
-  color: white;
-  font-size: 20px;
-  font-weight: 600;
-  margin-bottom: 24px;
-}
-
-.social-icons {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-}
-
-.social-icon {
-  width: 50px;
-  height: 50px;
-  background: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #80A1BA;
-  transition: all 0.3s;
-  text-decoration: none;
-}
-
-.social-icon svg {
-  width: 24px;
-  height: 24px;
-}
-
-.social-icon:hover {
-  background: #6b8aa3;
-  color: white;
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
-
-/* Responsive Design */
-@media (max-width: 1200px) {
-  .contact-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .control-panel {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  }
-}
-
-@media (max-width: 768px) {
-  .intro-content {
-    padding: 30px;
-  }
-
-  .intro-title {
-    font-size: 32px;
-  }
-
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .attribution-card {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .mockaroo-logo {
-    margin: 0 auto;
-  }
-
-  .control-panel {
-    grid-template-columns: 1fr;
-  }
 }
 
 @media (max-width: 480px) {

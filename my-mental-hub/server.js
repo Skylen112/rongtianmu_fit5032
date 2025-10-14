@@ -12,7 +12,118 @@ app.use(cors());
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
+const admin = require("firebase-admin");
+const db = admin.firestore(); // Import Firebase Admin SDK
 
+// initialise once
+if (!admin.apps.length) {
+  admin.initializeApp();
+}
+
+const adminAuth = async (req, res, next) => {
+  const idToken = req.headers.authorization?.split("Bearer ")[1];
+
+  // Reject if no token provided
+  if (!idToken) {
+    return res.status(401).json({ error: "Missing or invalid token" });
+  }
+
+  try {
+    // Verify the Firebase ID token
+    const decoded = await admin.auth().verifyIdToken(idToken);
+
+    // Only allow users with admin = true in their custom claims
+    if (!decoded.admin) {
+      return res.status(403).json({ error: "Admins only" });
+    }
+
+    // Attach decoded token to request object for later use
+    req.user = decoded;
+    next(); // Proceed to the next middleware or route handler
+
+  } catch (error) {
+    console.error("Auth error:", error);
+    res.status(403).json({ error: "Invalid or expired token" });
+  }
+};
+
+//Manager's Dashboard
+app.get("/userData", adminAuth, async (req, res) => {
+  try {
+
+    // 1️⃣ count of users
+    const userSnapshot = await db.collection('users').get();
+    const totalUsers = userSnapshot.size;
+
+    // 2️⃣ time range
+    const lastMonth = new Date();
+    lastMonth.setMonth(lastMonth.getMonth() - 1);
+
+    // 3️⃣ activity data
+    const activities = await db.collection('activity')
+      .where('timestamp', '>=', lastMonth)
+      .get();
+
+    // 4️⃣ calculate daily activity trends
+    const trend = {};
+    activities.forEach(doc => {
+      const date = doc.data().timestamp.toDate().toISOString().slice(0, 10);
+      trend[date] = (trend[date] || 0) + 1;
+    });
+
+    // 5️⃣ return to the frontend
+    res.json({
+      totalUsers,
+      activityCount: activities.size,
+      trend
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get("/postData", adminAuth, async (req, res) => {
+  try {
+    // 1️⃣ time zone: one week
+    const now = new Date();
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(now.getDate() - 7);
+
+    // 2️⃣ count of post
+    const allPostsSnapshot = await db.collection("posts").get();
+    const totalPosts = allPostsSnapshot.size;
+
+    // 3️⃣ count of posts in this week
+    const postsThisWeekSnapshot = await db.collection("posts")
+      .where("createdAt", ">=", oneWeekAgo)
+      .get();
+    const postsThisWeek = postsThisWeekSnapshot.size;
+
+    // 4️⃣ post trend per week
+    const trend = {};
+    postsThisWeekSnapshot.forEach(doc => {
+      const data = doc.data();
+      const dateStr = data.createdAt.toDate().toISOString().slice(0, 10);
+      trend[dateStr] = (trend[dateStr] || 0) + 1;
+    });
+
+    // 5️⃣ return to the frontend
+    res.json({
+      totalPosts,
+      postsThisWeek,
+      trend
+    });
+
+  } catch (error) {
+    console.error("Error fetching posts stats:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+//send the email to user who subscribe the service
 app.post("/sendEmail", async (req, res) => {
   const { email, articleId } = req.body;
 

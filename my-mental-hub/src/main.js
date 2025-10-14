@@ -1,13 +1,16 @@
-import './assets/main.css'
-import 'bootstrap/dist/css/bootstrap.min.css'
-import 'bootstrap/dist/js/bootstrap.bundle.min.js'
+import './assets/main.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
-import { createApp } from 'vue'
-import App from './views/App.vue'
-import router from './router'
-import menu from './views/MenuView.vue'
-import PrimeVue from "./views/App.vue"
-import Aura from '@primeuix/themes/aura'
+
+import { createApp } from 'vue';
+import App from './views/App.vue';
+import router from './router';
+import menu from './views/MenuView.vue';
+// import PrimeVue from "./views/App.vue"
+import Aura from '@primeuix/themes/aura';
+import PrimeVue from 'primevue/config';
+import DataTable from 'primevue/datatable';
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
@@ -30,11 +33,16 @@ import { initializeApp } from "firebase/app";
 // // Initialize Firebase
 // initializeApp(firebaseConfig)
 
-createApp(App).use(router).mount('#app');
-App.use(
-  PrimeVue,{
-    themes:{
-      preset: Aura
-    }
+const app = createApp(App);
+
+// 注册插件：先 router，再 PrimeVue（在 mount 前）
+app.use(router);
+app.use(PrimeVue, {
+  theme: {  // 注意：4.x 用 theme 而非 themes
+    preset: Aura
   }
-)
+});
+
+// 挂载
+app.mount('#app');
+
