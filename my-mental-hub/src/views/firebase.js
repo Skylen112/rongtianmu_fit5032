@@ -6,7 +6,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyC1aWZLBAllDBsoqZLNP-d_Vc_ywc2bIk4",
+  // apiKey: "AIzaSyC1aWZLBAllDBsoqZLNP-d_Vc_ywc2bIk4",
   authDomain: "mymentalhub-8a81d.firebaseapp.com",
   projectId: "mymentalhub-8a81d",
   storageBucket: "mymentalhub-8a81d.firebasestorage.app",
